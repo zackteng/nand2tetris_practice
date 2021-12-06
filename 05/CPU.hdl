@@ -39,5 +39,24 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    Mux4Way16(a=instruction, b=instruction, c=instruction, d=outALU, sel[0]=instruction[15], sel[1]=instruction[5], out=outInA); // 确定是从指令设置A寄存器的值还是从内存读取
+    Or(a=instruction[15], b=instruction[5], out=loadA); // i位域和d位域
+    Register(in=outInA, load=loadA, out=outA, out[0..14]=addressM); // A Register
+    Register(in=outALU, load=instruction[4], out=outD); // D Register
+    Mux16(a=outA, b=inM, sel=instruction[12], out=outAorM); // a位域
+
+    ALU(x=outD, y=outAorM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=outALU, zr=zr, ng=ng);
+
+    Or(a=zr, b=ng, out=orZrNg);
+    Not(in=orZrNg, out=norZrNg);
+    And(a=norZrNg, b=instruction[0], out=jumpGt);
+    And(a=zr, b=instruction[1], out=jumpEq);
+    And(a=ng, b=instruction[2], out=jumpLt);
+    Or(a=jumpGt, b=jumpEq, out=jumpGE);
+    Or(a=jumpGE, b=jumpLt, out=jump);
+    Not(in=jump, out=inc);
+    PC(in=outA, load=jump, inc=inc, reset=reset, out[0..14]=pc); // PC Register
+
+    // 是否写入RAM 需要是C指令且M的d位域为1
+    And(a=instruction[15], b=instruction[3], out=writeM);
 }
