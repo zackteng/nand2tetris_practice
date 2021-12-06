@@ -39,21 +39,37 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    Mux4Way16(a=instruction, b=instruction, c=instruction, d=outALU, sel[0]=instruction[15], sel[1]=instruction[5], out=outInA); // 确定是从指令设置A寄存器的值还是从内存读取
-    Or(a=instruction[15], b=instruction[5], out=loadA); // i位域和d位域
+    // A寄存器存取
+    Mux4Way16(a=instruction, b=instruction, c=outA, d=outALU, sel[0]=instruction[5], sel[1]=instruction[15], out=outInA); // 确定是从指令设置A寄存器的值还是从内存读取还是保持A寄存器的值
+    Not(in=instruction[15], out=instructionA);
+    Or(a=instructionA, b=instruction[5], out=loadA); // i位域和d位域
     Register(in=outInA, load=loadA, out=outA, out[0..14]=addressM); // A Register
-    Register(in=outALU, load=instruction[4], out=outD); // D Register
+
+    // D寄存器存取
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    Register(in=outALU, load=loadD, out=outD); // D Register
+
+    // A寄存器里的值作为数字还是地址参与处理
     Mux16(a=outA, b=inM, sel=instruction[12], out=outAorM); // a位域
 
-    ALU(x=outD, y=outAorM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=outALU, zr=zr, ng=ng);
+    // ALU处理逻辑
+    Mux(a=false, b=instruction[6], sel=instruction[15], out=no);
+    Mux(a=false, b=instruction[7], sel=instruction[15], out=f);
+    Mux(a=false, b=instruction[8], sel=instruction[15], out=ny);
+    Mux(a=false, b=instruction[9], sel=instruction[15], out=zy);
+    Mux(a=true, b=instruction[10], sel=instruction[15], out=nx);
+    Mux(a=true, b=instruction[11], sel=instruction[15], out=zx);
+    ALU(x=outD, y=outAorM, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=outM, out=outALU, zr=zr, ng=ng);
 
+    // 更新PC逻辑
     Or(a=zr, b=ng, out=orZrNg);
     Not(in=orZrNg, out=norZrNg);
     And(a=norZrNg, b=instruction[0], out=jumpGt);
     And(a=zr, b=instruction[1], out=jumpEq);
     And(a=ng, b=instruction[2], out=jumpLt);
     Or(a=jumpGt, b=jumpEq, out=jumpGE);
-    Or(a=jumpGE, b=jumpLt, out=jump);
+    Or(a=jumpGE, b=jumpLt, out=jumpAll);
+    And(a=instruction[15], b=jumpAll, out=jump);
     Not(in=jump, out=inc);
     PC(in=outA, load=jump, inc=inc, reset=reset, out[0..14]=pc); // PC Register
 
