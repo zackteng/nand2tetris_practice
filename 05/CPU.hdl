@@ -43,11 +43,13 @@ CHIP CPU {
     Mux4Way16(a=instruction, b=instruction, c=outA, d=outALU, sel[0]=instruction[5], sel[1]=instruction[15], out=outInA); // 确定是从指令设置A寄存器的值还是从内存读取还是保持A寄存器的值
     Not(in=instruction[15], out=instructionA);
     Or(a=instructionA, b=instruction[5], out=loadA); // i位域和d位域
-    Register(in=outInA, load=loadA, out=outA, out[0..14]=addressM); // A Register
+    // Register(in=outInA, load=loadA, out=outA, out[0..14]=addressM); // A Register
+    ARegister(in=outInA, load=loadA, out=outA, out[0..14]=addressM); // A Register使用内置版本
 
     // D寄存器存取
     And(a=instruction[15], b=instruction[4], out=loadD);
-    Register(in=outALU, load=loadD, out=outD); // D Register
+    // Register(in=outALU, load=loadD, out=DRegister); // D Register
+    DRegister(in=outALU, load=loadD, out=DRegister); // D Register使用内置版本
 
     // A寄存器里的值作为数字还是地址参与处理
     Mux16(a=outA, b=inM, sel=instruction[12], out=outAorM); // a位域
@@ -59,7 +61,7 @@ CHIP CPU {
     Mux(a=false, b=instruction[9], sel=instruction[15], out=zy);
     Mux(a=true, b=instruction[10], sel=instruction[15], out=nx);
     Mux(a=true, b=instruction[11], sel=instruction[15], out=zx);
-    ALU(x=outD, y=outAorM, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=outM, out=outALU, zr=zr, ng=ng);
+    ALU(x=DRegister, y=outAorM, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=outM, out=outALU, zr=zr, ng=ng);
 
     // 更新PC逻辑
     Or(a=zr, b=ng, out=orZrNg);
