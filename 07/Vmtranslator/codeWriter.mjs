@@ -370,6 +370,46 @@ class CodeWriter {
     this.result.push(asm);
   }
 
+  writeInit() {
+
+  }
+
+  writeLabel(label) {
+    const asm = `(${label})`;
+    this.result.push(asm);
+  }
+
+  writeGoto(label) {
+    const asm = `
+      @${label}
+      0;JMP
+    `;
+    this.result.push(asm);
+  }
+
+  writeIf(label) {
+    const asm = `
+      @SP
+      AM=M-1
+      D=M
+      @${label}
+      D;JNE
+    `;
+    this.result.push(asm);
+  }
+
+  writeCall(functionName, numARgs) {
+
+  }
+
+  writeReturn() {
+
+  }
+
+  writeFunction(functionName, numLocals) {
+
+  }
+
   close() {
     writeFileSync(this.path, this.result.join(""));
   }

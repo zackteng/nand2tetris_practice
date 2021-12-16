@@ -29,6 +29,12 @@ while (parser.hasMoreCommands()) {
       parser.arg1(),
       +parser.arg2()
     );
+  } else if (commandType === "C_LABEL") {
+    codeWriter.writeLabel(parser.arg1());
+  } else if (commandType === "C_GOTO") {
+    codeWriter.writeGoto(parser.arg1());
+  } else if (commandType === "C_IF") {
+    codeWriter.writeIf(parser.arg1());
   }
 }
 
