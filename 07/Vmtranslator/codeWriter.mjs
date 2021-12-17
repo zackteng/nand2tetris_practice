@@ -5,6 +5,8 @@ class CodeWriter {
   fileName = null;
   result = [];
   labelCount = 0;
+  returnIndex = 0;
+  currentFunctionName = null;
 
   constructor(path) {
     this.path = path;
@@ -15,20 +17,17 @@ class CodeWriter {
   }
 
   writeArithmetic(command) {
-    console.log(command);
     let asm = "";
     switch (command) {
       case "add":
         asm = `
         @SP
-        M=M-1
-        A=M
+        AM=M-1
         D=M
         @R13
         M=D
         @SP
-        M=M-1
-        A=M
+        AM=M-1
         D=M
         @R13
         D=D+M
@@ -42,14 +41,12 @@ class CodeWriter {
       case "sub":
         asm = `
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           M=D
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           D=D-M
@@ -63,8 +60,7 @@ class CodeWriter {
       case "neg":
         asm = `
             @SP
-            M=M-1
-            A=M
+            AM=M-1
             D=-M
             @SP
             A=M
@@ -76,14 +72,12 @@ class CodeWriter {
       case "and":
         asm = `
             @SP
-            M=M-1
-            A=M
+            AM=M-1
             D=M
             @R13
             M=D
             @SP
-            M=M-1
-            A=M
+            AM=M-1
             D=M
             @R13
             D=D&M
@@ -97,14 +91,12 @@ class CodeWriter {
       case "or":
         asm = `
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           M=D
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           D=D|M
@@ -118,8 +110,7 @@ class CodeWriter {
       case "not":
         asm = `
               @SP
-              M=M-1
-              A=M
+              AM=M-1
               D=!M
               @SP
               A=M
@@ -131,14 +122,12 @@ class CodeWriter {
       case "eq":
         asm = `
             @SP
-            M=M-1
-            A=M
+            AM=M-1
             D=M
             @R13
             M=D
             @SP
-            M=M-1
-            A=M
+            AM=M-1
             D=M
             @R13
             D=D-M
@@ -158,14 +147,12 @@ class CodeWriter {
       case "gt":
         asm = `
               @SP
-              M=M-1
-              A=M
+              AM=M-1
               D=M
               @R13
               M=D
               @SP
-              M=M-1
-              A=M
+              AM=M-1
               D=M
               @R13
               D=D-M
@@ -185,14 +172,12 @@ class CodeWriter {
       case "lt":
         asm = `
                 @SP
-                M=M-1
-                A=M
+                AM=M-1
                 D=M
                 @R13
                 M=D
                 @SP
-                M=M-1
-                A=M
+                AM=M-1
                 D=M
                 @R13
                 D=D-M
@@ -214,7 +199,6 @@ class CodeWriter {
   }
 
   writePushPop(command, segment, index) {
-    console.log(command, " ", segment, " ", index);
     let asm = "";
     if (command === "push") {
       switch (segment) {
@@ -358,8 +342,7 @@ class CodeWriter {
 
       asm += `
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -371,43 +354,181 @@ class CodeWriter {
   }
 
   writeInit() {
-
+    const asm = `
+      @256
+      D=A
+      @SP
+      M=D
+      @Sys.init
+      0;JMP
+    `;
+    this.result.push(asm);
   }
 
   writeLabel(label) {
-    const asm = `(${label})`;
+    const labelName =
+      this.currentFunctionName === null
+        ? label
+        : `${this.currentFunctionName}$${label}`;
+    const asm = `(${labelName})`;
     this.result.push(asm);
   }
 
   writeGoto(label) {
+    const labelName =
+    this.currentFunctionName === null
+      ? label
+      : `${this.currentFunctionName}$${label}`;
     const asm = `
-      @${label}
+      @${labelName}
       0;JMP
     `;
     this.result.push(asm);
   }
 
   writeIf(label) {
+    const labelName =
+    this.currentFunctionName === null
+      ? label
+      : `${this.currentFunctionName}$${label}`;
     const asm = `
       @SP
       AM=M-1
       D=M
-      @${label}
+      @${labelName}
       D;JNE
     `;
     this.result.push(asm);
   }
 
   writeCall(functionName, numARgs) {
-
+    const asm = `
+      @ReturnAddress.${this.returnIndex}
+      D=A
+      @SP
+      A=M
+      M=D
+      @SP
+      M=M+1
+      @LCL
+      D=M
+      @SP
+      A=M
+      M=D
+      @SP
+      M=M+1
+      @ARG
+      D=M
+      @SP
+      A=M
+      M=D
+      @SP
+      M=M+1
+      @THIS
+      D=M
+      @SP
+      A=M
+      M=D
+      @SP
+      M=M+1
+      @THAT
+      D=M
+      @SP
+      A=M
+      M=D
+      @SP
+      MD=M+1
+      @LCL
+      M=D
+      @${numARgs}
+      D=D-A
+      @5
+      D=D-A
+      @ARG
+      M=D
+      @${functionName}
+      0;JMP
+      (ReturnAddress.${this.returnIndex++})
+    `;
+    this.result.push(asm);
   }
 
   writeReturn() {
-
+    const asm = `
+      @LCL
+      D=M
+      @R13
+      M=D
+      @5
+      A=D-A
+      D=M
+      @R14
+      M=D
+      @SP
+      AM=M-1
+      D=M
+      @ARG
+      A=M
+      M=D
+      @ARG
+      D=M+1
+      @SP
+      M=D
+      @R13
+      D=M
+      A=D-1
+      D=M
+      @THAT
+      M=D
+      @R13
+      D=M
+      @2
+      A=D-A
+      D=M
+      @THIS
+      M=D
+      @R13
+      D=M
+      @3
+      A=D-A
+      D=M
+      @ARG
+      M=D
+      @R13
+      D=M
+      @4
+      A=D-A
+      D=M
+      @LCL
+      M=D
+      @R14
+      A=M
+      0;JMP
+    `;
+    this.currentFunctionName = null;
+    this.result.push(asm);
   }
 
   writeFunction(functionName, numLocals) {
-
+    this.currentFunctionName = functionName;
+    const asm = `
+      (${functionName})
+      @${numLocals}
+      D=A
+      @${functionName}.initLocalsEnd
+      D;JEQ
+      (${functionName}.initLocalsStart)
+      @SP
+      A=M
+      M=0
+      @SP
+      M=M+1
+      D=D-1
+      @${functionName}.initLocalsStart
+      D;JNE
+      (${functionName}.initLocalsEnd)
+    `;
+    this.result.push(asm);
   }
 
   close() {

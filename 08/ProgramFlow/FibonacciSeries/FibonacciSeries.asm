@@ -17,8 +17,7 @@
 						M=D
 					
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -41,8 +40,7 @@
 				M=D
 				
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -65,8 +63,7 @@
 				M=D
 				
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -94,14 +91,12 @@
 			M=M+1
 		
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           M=D
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           D=D-M
@@ -119,8 +114,7 @@
 				M=D
 				
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -172,14 +166,12 @@
 			M=M+1
 		
         @SP
-        M=M-1
-        A=M
+        AM=M-1
         D=M
         @R13
         M=D
         @SP
-        M=M-1
-        A=M
+        AM=M-1
         D=M
         @R13
         D=D+M
@@ -197,8 +189,7 @@
 				M=D
 				
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -223,14 +214,12 @@
 			M=M+1
 		
         @SP
-        M=M-1
-        A=M
+        AM=M-1
         D=M
         @R13
         M=D
         @SP
-        M=M-1
-        A=M
+        AM=M-1
         D=M
         @R13
         D=D+M
@@ -246,8 +235,7 @@
 						M=D
 					
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
@@ -275,14 +263,12 @@
 			M=M+1
 		
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           M=D
           @SP
-          M=M-1
-          A=M
+          AM=M-1
           D=M
           @R13
           D=D-M
@@ -300,8 +286,7 @@
 				M=D
 				
 			@SP
-      M=M-1
-			A=M
+      AM=M-1
 			D=M
 			@R13
 			A=M
