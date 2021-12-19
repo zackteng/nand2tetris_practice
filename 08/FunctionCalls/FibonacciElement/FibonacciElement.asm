@@ -1,5 +1,5 @@
 
-      @256
+      @261
       D=A
       @SP
       M=D
@@ -9,9 +9,9 @@
       (Main.fibonacci)
       @0
       D=A
-      (Main.fibonacci.initLocalsStart)
       @Main.fibonacci.initLocalsEnd
       D;JEQ
+      (Main.fibonacci.initLocalsStart)
       @SP
       A=M
       M=0
@@ -19,7 +19,7 @@
       M=M+1
       D=D-1
       @Main.fibonacci.initLocalsStart
-      0;JMP
+      D;JNE
       (Main.fibonacci.initLocalsEnd)
     
 					@ARG
@@ -91,14 +91,12 @@
       @R13
       M=D
       @5
-      D=D-A
-      A=D
+      A=D-A
       D=M
       @R14
       M=D
       @SP
-      M=M-1
-      A=M
+      AM=M-1
       D=M
       @ARG
       A=M
@@ -137,7 +135,7 @@
       @R14
       A=M
       0;JMP
-    (IF_FALSE)
+    (Main.fibonacci$IF_FALSE)
 					@ARG
 					D=M
 					@0
@@ -210,19 +208,17 @@
       M=D
       @SP
       MD=M+1
+      @LCL
+      M=D
       @1
       D=D-A
       @5
       D=D-A
       @ARG
       M=D
-      @SP
-      D=M
-      @LCL
-      M=D
       @Main.fibonacci
       0;JMP
-      (ReturnAddress.1)
+      (ReturnAddress.0)
     
 					@ARG
 					D=M
@@ -261,7 +257,7 @@
           @SP
           M=M+1
           
-      @ReturnAddress.2
+      @ReturnAddress.1
       D=A
       @SP
       A=M
@@ -296,19 +292,17 @@
       M=D
       @SP
       MD=M+1
+      @LCL
+      M=D
       @1
       D=D-A
       @5
       D=D-A
       @ARG
       M=D
-      @SP
-      D=M
-      @LCL
-      M=D
       @Main.fibonacci
       0;JMP
-      (ReturnAddress.3)
+      (ReturnAddress.1)
     
         @SP
         AM=M-1
@@ -331,14 +325,12 @@
       @R13
       M=D
       @5
-      D=D-A
-      A=D
+      A=D-A
       D=M
       @R14
       M=D
       @SP
-      M=M-1
-      A=M
+      AM=M-1
       D=M
       @ARG
       A=M
@@ -381,9 +373,9 @@
       (Sys.init)
       @0
       D=A
-      (Sys.init.initLocalsStart)
       @Sys.init.initLocalsEnd
       D;JEQ
+      (Sys.init.initLocalsStart)
       @SP
       A=M
       M=0
@@ -391,7 +383,7 @@
       M=M+1
       D=D-1
       @Sys.init.initLocalsStart
-      0;JMP
+      D;JNE
       (Sys.init.initLocalsEnd)
     
 					@4
@@ -403,7 +395,7 @@
 			@SP
 			M=M+1
 		
-      @ReturnAddress.4
+      @ReturnAddress.2
       D=A
       @SP
       A=M
@@ -438,19 +430,17 @@
       M=D
       @SP
       MD=M+1
+      @LCL
+      M=D
       @1
       D=D-A
       @5
       D=D-A
       @ARG
       M=D
-      @SP
-      D=M
-      @LCL
-      M=D
       @Main.fibonacci
       0;JMP
-      (ReturnAddress.5)
+      (ReturnAddress.2)
     (Sys.init$WHILE)
       @Sys.init$WHILE
       0;JMP

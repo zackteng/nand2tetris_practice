@@ -1,10 +1,17 @@
 
+      @261
+      D=A
+      @SP
+      M=D
+      @Sys.init
+      0;JMP
+    
       (Sys.init)
       @0
       D=A
-      (Sys.init.initLocalsStart)
       @Sys.init.initLocalsEnd
       D;JEQ
+      (Sys.init.initLocalsStart)
       @SP
       A=M
       M=0
@@ -12,7 +19,7 @@
       M=M+1
       D=D-1
       @Sys.init.initLocalsStart
-      0;JMP
+      D;JNE
       (Sys.init.initLocalsEnd)
     
 					@4000
@@ -92,19 +99,17 @@
       M=D
       @SP
       MD=M+1
+      @LCL
+      M=D
       @0
       D=D-A
       @5
       D=D-A
       @ARG
       M=D
-      @SP
-      D=M
-      @LCL
-      M=D
       @Sys.main
       0;JMP
-      (ReturnAddress.1)
+      (ReturnAddress.0)
     
 				@6
 				D=A
@@ -124,9 +129,9 @@
       (Sys.main)
       @5
       D=A
-      (Sys.main.initLocalsStart)
       @Sys.main.initLocalsEnd
       D;JEQ
+      (Sys.main.initLocalsStart)
       @SP
       A=M
       M=0
@@ -134,7 +139,7 @@
       M=M+1
       D=D-1
       @Sys.main.initLocalsStart
-      0;JMP
+      D;JNE
       (Sys.main.initLocalsEnd)
     
 					@4001
@@ -257,7 +262,7 @@
 			@SP
 			M=M+1
 		
-      @ReturnAddress.2
+      @ReturnAddress.1
       D=A
       @SP
       A=M
@@ -292,19 +297,17 @@
       M=D
       @SP
       MD=M+1
+      @LCL
+      M=D
       @1
       D=D-A
       @5
       D=D-A
       @ARG
       M=D
-      @SP
-      D=M
-      @LCL
-      M=D
       @Sys.add12
       0;JMP
-      (ReturnAddress.3)
+      (ReturnAddress.1)
     
 				@5
 				D=A
@@ -447,14 +450,12 @@
       @R13
       M=D
       @5
-      D=D-A
-      A=D
+      A=D-A
       D=M
       @R14
       M=D
       @SP
-      M=M-1
-      A=M
+      AM=M-1
       D=M
       @ARG
       A=M
@@ -497,9 +498,9 @@
       (Sys.add12)
       @0
       D=A
-      (Sys.add12.initLocalsStart)
       @Sys.add12.initLocalsEnd
       D;JEQ
+      (Sys.add12.initLocalsStart)
       @SP
       A=M
       M=0
@@ -507,7 +508,7 @@
       M=M+1
       D=D-1
       @Sys.add12.initLocalsStart
-      0;JMP
+      D;JNE
       (Sys.add12.initLocalsEnd)
     
 					@4002
@@ -594,14 +595,12 @@
       @R13
       M=D
       @5
-      D=D-A
-      A=D
+      A=D-A
       D=M
       @R14
       M=D
       @SP
-      M=M-1
-      A=M
+      AM=M-1
       D=M
       @ARG
       A=M

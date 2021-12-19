@@ -2,9 +2,9 @@
       (SimpleFunction.test)
       @2
       D=A
-      (SimpleFunction.test.initLocalsStart)
       @SimpleFunction.test.initLocalsEnd
       D;JEQ
+      (SimpleFunction.test.initLocalsStart)
       @SP
       A=M
       M=0
@@ -12,7 +12,7 @@
       M=M+1
       D=D-1
       @SimpleFunction.test.initLocalsStart
-      0;JMP
+      D;JNE
       (SimpleFunction.test.initLocalsEnd)
     
 					@LCL
@@ -125,14 +125,12 @@
       @R13
       M=D
       @5
-      D=D-A
-      A=D
+      A=D-A
       D=M
       @R14
       M=D
       @SP
-      M=M-1
-      A=M
+      AM=M-1
       D=M
       @ARG
       A=M

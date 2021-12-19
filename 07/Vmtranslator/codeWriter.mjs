@@ -355,7 +355,7 @@ class CodeWriter {
 
   writeInit() {
     const asm = `
-      @256
+      @261
       D=A
       @SP
       M=D
@@ -505,7 +505,6 @@ class CodeWriter {
       A=M
       0;JMP
     `;
-    this.currentFunctionName = null;
     this.result.push(asm);
   }
 
