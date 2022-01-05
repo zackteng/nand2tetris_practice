@@ -53,16 +53,18 @@ class JackTokenizer {
   execResult;
 
   constructor(path) {
-    this.jackSource = readFileSync(path, { encoding: "utf-8" })
-      .replace(/(\s*\/\/.*)|(\s*\/\*(.|\r?\n)*?\*\/)/g, "")
-      // .replace(/((\r?\n)|\t)+/g, " ")
-      // .replace(/\s+/g, " ")
-      // .split(/\s+/)
-      // .filter((line) => line !== "")
-      // .map((line) => line.trim().split(/\s+/));
-      // console.log(this.jackSource)
+    this.jackSource = readFileSync(path, { encoding: "utf-8" }).replace(
+      /(\s*\/\/.*)|(\s*\/\*(.|\r?\n)*?\*\/)/g,
+      ""
+    );
+    // .replace(/((\r?\n)|\t)+/g, " ")
+    // .replace(/\s+/g, " ")
+    // .split(/\s+/)
+    // .filter((line) => line !== "")
+    // .map((line) => line.trim().split(/\s+/));
+    // console.log(this.jackSource)
   }
-"//"
+
   hasMoreTokens() {
     return this.execResult !== null;
   }
@@ -85,6 +87,22 @@ class JackTokenizer {
 
   symbol() {
     return this.execResult[3];
+  }
+
+  escapeSymbol() {
+    let symbol = this.symbol();
+    switch (symbol) {
+      case "<":
+        symbol = "&lt;";
+        break;
+      case ">":
+        symbol = "&gt;";
+        break;
+      case "&":
+        symbol = "&amp;";
+        break;
+    }
+    return symbol;
   }
 
   identifier() {
