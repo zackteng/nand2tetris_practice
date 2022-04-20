@@ -49,7 +49,7 @@ import { readFileSync } from "fs";
 class JackTokenizer {
   jackSource = null;
   tokenRegexp =
-    /(class|constructor|method|function|int|boolean|char|void|var|static|field|let|do|if|else|while|return|true|false|null|this)|([a-zA-Z_]\w*)|(\(|\)|\[|\]|\{|\}|\,|\;|\=|\.|\+|\-|\*|\/|\&|\||\~|\<|\>)|(\d+)|\"(.*)\"/g;
+    /(\bclass\b|\bconstructor\b|\bmethod\b|\bfunction\b|\bint\b|\bboolean\b|\bchar\b|\bvoid\b|\bvar\b|\bstatic\b|\bfield\b|\blet\b|\bdo\b|\bif\b|\belse\b|\bwhile\b|\breturn\b|\btrue\b|\bfalse\b|\bnull\b|\bthis\b)|([a-zA-Z_]\w*)|(\(|\)|\[|\]|\{|\}|\,|\;|\=|\.|\+|\-|\*|\/|\&|\||\~|\<|\>)|(\d+)|\"(.*)\"/g;
   execResult;
 
   constructor(path) {
